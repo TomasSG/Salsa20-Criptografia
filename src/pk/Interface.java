@@ -1,35 +1,33 @@
 package pk;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
-import java.nio.file.Files;
-
-import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.SwingConstants;
 import java.awt.Color;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.SystemColor;
 
 public class Interface extends JFrame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	// Lógica
 	private File file;
 	private Salsa20 salsita;
@@ -45,6 +43,23 @@ public class Interface extends JFrame {
 
 	private static final String PATH_CIFRADO_OUT = "./cifrado.png";
 	private static final String PATH_DESCIFRADO_OUT = "./descifrado.png";
+	
+	private static final String MSJ_ERROR_KEY_VACIA = "Ingrese un número como key";
+	private static final String MSJ_ERROR_KEY_NO_NUMERICA = "La key debe ser un valor numérico";
+	private static final String MSJ_ERROR_KEY_MUY_LARGA = "La key no puede tener una longitud mayor a 32 caracteres";
+	
+	private static final String MSJ_ERROR_FILE_NO_SELECCIONADO = "Eliga un archivo a encriptar";
+	private static final String MSJ_ERROR_NO_SE_PUDO_ABRIR_FILE = "No se logro a acceder a ";
+	private static final String MSJ_ERROR_FILE_NO_PNG = "Solo se pueden usar archivos PNG";
+	
+	private static final String MSJ_EXITO_OPERACION_REALIZADA = "Operación realizada!";
+	
+	private static final String MSJ_CONFIRNAR_CERRAR_VENTANA = "¿Deseas cerrar la ventana?";
+	
+	private static final String TITULO_ERROR = "Error!";
+	private static final String TITULO_EXITO = "Éxito!";
+	private static final String TITULO_CERRAR_VENTANA = "Cerrar Ventana";
+	private static final String TITULO_APLICACION = "Salsa 20";
 
 	// Otros
 	private JPanel contentPane;
@@ -69,9 +84,25 @@ public class Interface extends JFrame {
 	}
 
 	public Interface() {
-		setBackground(Color.LIGHT_GRAY);
 
 		/* INICIALIZACIÓN OBJETOS BÁSICOS */
+		
+		// Establecemos un look and feel
+		try {
+			
+			JFrame.setDefaultLookAndFeelDecorated(true);
+			JDialog.setDefaultLookAndFeelDecorated(true);
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+			
+		} catch (ClassNotFoundException e1) {
+			
+		} catch (InstantiationException e1) {
+		
+		} catch (IllegalAccessException e1) {
+
+		} catch (UnsupportedLookAndFeelException e1) {
+
+		}
 
 		// Definimos que no realice ninguna acción en el cierre
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -81,10 +112,13 @@ public class Interface extends JFrame {
 
 		// Establecemos que no se pueda modificar el tamaño
 		setResizable(false);
+		
+		// Ponemos un título
+		setTitle(TITULO_APLICACION);
 
 		// Definición del ContentPane
 		contentPane = new JPanel();
-		contentPane.setBackground(Color.WHITE);
+		contentPane.setBackground(Color.white);
 		contentPane.setLayout(null);
 		setContentPane(contentPane);
 
@@ -113,13 +147,13 @@ public class Interface extends JFrame {
 		contentPane.add(btnArchivo);
 
 		JLabel lblArchivoSel = new JLabel("Archivo Seleccionado:");
-		lblArchivoSel.setBounds(11, 201, 188, 35);
-		lblArchivoSel.setFont(new Font("Arial", Font.BOLD, 16));
+		lblArchivoSel.setBounds(34, 201, 159, 35);
+		lblArchivoSel.setFont(FONT_CAMPOS);
 		contentPane.add(lblArchivoSel);
 
 		JLabel lblKey = new JLabel("Key:");
-		lblKey.setFont(new Font("Arial", Font.BOLD, 16));
-		lblKey.setBounds(155, 247, 44, 35);
+		lblKey.setFont(FONT_CAMPOS);
+		lblKey.setBounds(155, 247, 38, 35);
 		contentPane.add(lblKey);
 
 		txtKey = new JTextField();
@@ -134,12 +168,12 @@ public class Interface extends JFrame {
 		contentPane.add(txtNombre);
 
 		JButton btnCifrar = new JButton("Cifrar");
-		btnCifrar.setFont(new Font("Arial", Font.PLAIN, 16));
+		btnCifrar.setFont(FONT_CAMPOS);
 		btnCifrar.setBounds(10, 329, 216, 45);
 		contentPane.add(btnCifrar);
 
 		JButton btnDescifrar = new JButton("Descifrar");
-		btnDescifrar.setFont(new Font("Arial", Font.PLAIN, 16));
+		btnDescifrar.setFont(FONT_CAMPOS);
 		btnDescifrar.setBounds(241, 329, 216, 45);
 		contentPane.add(btnDescifrar);
 
@@ -193,7 +227,7 @@ public class Interface extends JFrame {
 	 */
 
 	private int mensajeCerrarVentana() {
-		return JOptionPane.showConfirmDialog(null, "¿Deseas cerrar la aplicación?", "Cerrar aplicaicón",
+		return JOptionPane.showConfirmDialog(null, MSJ_CONFIRNAR_CERRAR_VENTANA, TITULO_CERRAR_VENTANA,
 				JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE);
 	}
 
@@ -202,7 +236,7 @@ public class Interface extends JFrame {
 	 */
 
 	private int mensajeError(String msj) {
-		return JOptionPane.showConfirmDialog(null, msj, "Error", JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
+		return JOptionPane.showConfirmDialog(null, msj, TITULO_ERROR, JOptionPane.CLOSED_OPTION, JOptionPane.ERROR_MESSAGE);
 	}
 
 	/*
@@ -210,7 +244,7 @@ public class Interface extends JFrame {
 	 */
 
 	private int mensajeExito(String msj) {
-		return JOptionPane.showConfirmDialog(null, msj, "ÉXito!", JOptionPane.CLOSED_OPTION,
+		return JOptionPane.showConfirmDialog(null, msj, TITULO_EXITO, JOptionPane.CLOSED_OPTION,
 				JOptionPane.INFORMATION_MESSAGE);
 	}
 
@@ -239,10 +273,19 @@ public class Interface extends JFrame {
 			// Obtenemos el archivo seleccionado
 			file = chooser.getSelectedFile();
 
+			// Verificamos que sea un png
+			if(!file.getName().matches(".[png]$")) {
+
+				// Emitimos un mensaje de error y reseteamos la variable file
+				mensajeError(MSJ_ERROR_FILE_NO_PNG);
+				file = null;
+				return;
+			}
+			
+			
 			// Establecemos el nombre
 			txtNombre.setText(file.getName());
 
-			// TODO: verificar que sea un PNG o JPG
 		}
 	}
 
@@ -259,22 +302,22 @@ public class Interface extends JFrame {
 
 		// Validaciones necesarias
 		if (keyString == null || keyString.trim().isEmpty()) {
-			mensajeError("Ingrese un número como Key");
+			mensajeError(MSJ_ERROR_KEY_VACIA);
 			return;
 		}
 
 		if (!keyString.matches("^[0-9]+$")) {
-			mensajeError("La key debe ser un valor numérico");
+			mensajeError(MSJ_ERROR_KEY_NO_NUMERICA);
 			return;
 		}
 		
 		if(keyString.length() > 32) {
-			mensajeError("La Key no puede tener una longitud mayor a 32 caracteres");
+			mensajeError(MSJ_ERROR_KEY_MUY_LARGA);
 			return;
 		}
 
 		if (file == null) {
-			mensajeError("Eliga un archivo a encriptar");
+			mensajeError(MSJ_ERROR_FILE_NO_SELECCIONADO);
 			return;
 		}
 
@@ -307,7 +350,7 @@ public class Interface extends JFrame {
 			} catch (IOException e) {
 
 				// Mostramos por pantalla el error y finalizamso la ejecución
-				mensajeError("No se logro acceder a: " + file.getPath());
+				mensajeError(MSJ_ERROR_NO_SE_PUDO_ABRIR_FILE + file.getPath());
 				return;
 			}
 
@@ -327,13 +370,13 @@ public class Interface extends JFrame {
 			} catch (IOException e) {
 
 				// Mostramos por pantalla el error y finalizamso la ejecución
-				mensajeError("No se logro acceder a: " + file.getPath());
+				mensajeError(MSJ_ERROR_NO_SE_PUDO_ABRIR_FILE + file.getPath());
 				return;
 			}
 		}
 		
 		// Mostramos un mensaje de éxito
-		mensajeExito("Operación Completada!");
+		mensajeExito(MSJ_EXITO_OPERACION_REALIZADA);
 
 		// Reseteamos el file
 		file = null;
