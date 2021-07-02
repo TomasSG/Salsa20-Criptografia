@@ -46,7 +46,7 @@ public class Interface extends JFrame {
 	
 	private static final String MSJ_ERROR_KEY_VACIA = "Ingrese un número como key";
 	private static final String MSJ_ERROR_KEY_NO_NUMERICA = "La key debe ser un valor numérico";
-	private static final String MSJ_ERROR_KEY_MUY_LARGA = "La key no puede tener una longitud mayor a 32 caracteres";
+	private static final String MSJ_ERROR_KEY_LONGITUD = "La key debe tener una longitud de 32 caracteres";
 	
 	private static final String MSJ_ERROR_FILE_NO_SELECCIONADO = "Eliga un archivo a encriptar";
 	private static final String MSJ_ERROR_NO_SE_PUDO_ABRIR_FILE = "No se logro a acceder a ";
@@ -274,11 +274,12 @@ public class Interface extends JFrame {
 			file = chooser.getSelectedFile();
 
 			// Verificamos que sea un png
-			if(!file.getName().matches(".[png]$")) {
+			if(!file.getName().contains(".png")) {
 
 				// Emitimos un mensaje de error y reseteamos la variable file
 				mensajeError(MSJ_ERROR_FILE_NO_PNG);
 				file = null;
+				txtNombre.setText("");
 				return;
 			}
 			
@@ -311,25 +312,14 @@ public class Interface extends JFrame {
 			return;
 		}
 		
-		if(keyString.length() > 32) {
-			mensajeError(MSJ_ERROR_KEY_MUY_LARGA);
+		if(keyString.length() != 32) {
+			mensajeError(MSJ_ERROR_KEY_LONGITUD);
 			return;
 		}
 
 		if (file == null) {
 			mensajeError(MSJ_ERROR_FILE_NO_SELECCIONADO);
 			return;
-		}
-
-
-		// Verificamos la longitud de la cadena
-		if(keyString.length() < 32) {
-			
-			// Como la key debe tener una longitud de 32 caracteres, la rellenamos hasta llegar a esa longitud
-			for(int i = keyString.length(); i < 32; i++) {
-				keyString = keyString.concat("0");
-			}
-			
 		}
 		
 		// Convertimos la key a bytes
