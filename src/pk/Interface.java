@@ -340,7 +340,7 @@ public class Interface extends JFrame {
 				criptograma = salsita.encriptar(mensajeClaro, key);
 
 				// Guardamos el archivo
-				imgManager.escribirImagen(criptograma, img.getWidth(), img.getHeight(), img.getType(), PATH_CIFRADO_OUT);
+				imgManager.escribirImagen(criptograma, img.getWidth(), img.getHeight(), PATH_CIFRADO_OUT);
 
 			} catch (IOException e) {
 
@@ -363,7 +363,7 @@ public class Interface extends JFrame {
 				mensajeClaro = salsita.desencriptar(criptograma, key);
 
 				// Guardamos el resultado
-				imgManager.escribirImagen(mensajeClaro, img.getWidth(), img.getHeight(), img.getType(), PATH_DESCIFRADO_OUT);
+				imgManager.escribirImagen(mensajeClaro, img.getWidth(), img.getHeight(), PATH_DESCIFRADO_OUT);
 
 			} catch (IOException e) {
 
