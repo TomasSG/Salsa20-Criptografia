@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.JButton;
@@ -297,6 +298,7 @@ public class Interface extends JFrame {
 	private void realizarOperación(int op) {
 
 		String keyString = txtKey.getText();
+		BufferedImage img;
 		byte[] key;
 		byte[] mensajeClaro;
 		byte[] criptograma;
@@ -328,14 +330,17 @@ public class Interface extends JFrame {
 		if (op == OPERACION_CIFRAR) {
 			try {
 
+				// Leemos la imagen
+				img = imgManager.leerImagen(file.getPath());
+				
 				// Inicializamos el mensajeClaro con los bytes
-				mensajeClaro = imgManager.leerImagen(file.getPath());
+				mensajeClaro = imgManager.convertirBytes(img);
 
 				// Ciframos el mensaje en claro
 				criptograma = salsita.encriptar(mensajeClaro, key);
 
 				// Guardamos el archivo
-				imgManager.escribirImagen(criptograma, PATH_CIFRADO_OUT);
+				imgManager.escribirImagen(criptograma, img.getWidth(), img.getHeight(), img.getType(), PATH_CIFRADO_OUT);
 
 			} catch (IOException e) {
 
@@ -347,15 +352,18 @@ public class Interface extends JFrame {
 		} else if (op == OPERACION_DESCIFRAR) {
 
 			try {
+				
+				// Leemos la imagen
+				img = imgManager.leerImagen(file.getPath());
 
 				// Inicializamos el criptograma con los bytes
-				criptograma = imgManager.leerImagen(file.getPath());
+				criptograma = imgManager.convertirBytes(img);
 
 				// Desciframos el mensaje
 				mensajeClaro = salsita.desencriptar(criptograma, key);
 
 				// Guardamos el resultado
-				imgManager.escribirImagen(mensajeClaro, PATH_DESCIFRADO_OUT);
+				imgManager.escribirImagen(mensajeClaro, img.getWidth(), img.getHeight(), img.getType(), PATH_DESCIFRADO_OUT);
 
 			} catch (IOException e) {
 
